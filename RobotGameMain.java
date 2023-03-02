@@ -1,4 +1,4 @@
-package ru.gb.lesson1.game;
+
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -152,11 +152,23 @@ public class RobotGameMain {
                 @Override
                 public void runCommand(String[] args) {
                     Long robotId = Long.parseLong(args[0]);
+                    Optional<Direction> dir = Direction.ofString(args[1]);
                     Optional<RobotMap.Robot> robot = map.getById(robotId);
-                    robot.ifPresentOrElse(RobotMap.Robot::changedir, () -> System.out.println("Робот с идентификатором " + robotId + " не найден"));
+                    if (robot.isPresent() && dir.isPresent()) {
+                        RobotMap.Robot value = robot.get();
+                        value.changeDirection(dir.get());
+                        System.out.println(
+                                "Робот с идентификатором " + robotId + " изменил направление на " + args[1]);
+                    } else if (dir.isEmpty()) {
+                        System.out
+                                .println("Направления " + args[1] + " не существует. Введите TOP, RIGHT, BOTTOM, LEFT");
+                    } else {
+                        System.out.println("Робот с идентификатором " + robotId + " не найден");
+                    }
                 }
             });
         }
+
 
         private void initDeleteByIdCommandHandler() {
             handlers.add(new CommandHandler() {
@@ -168,11 +180,14 @@ public class RobotGameMain {
                 @Override
                 public void runCommand(String[] args) {
                     Long robotId = Long.parseLong(args[0]);
-                    Optional<RobotMap.Robot> robot = map.deleteById(robotId);
-                    robot.ifPresentOrElse(RobotMap.Robot::delete, () -> System.out.println("Робот с идентификатором " + robotId + " не найден"));
+                if (map.deleteById(robotId)) {
+                    System.out.println("Робот с идентификатором " + robotId + " удален");
+                } else {
+                    System.out.println("Робот с идентификатором " + robotId + " не найден");
                 }
-            });
-        }
+            }
+        });
+    }
 
         public void acceptCommand(String command) {
             String[] split = command.split(" ");

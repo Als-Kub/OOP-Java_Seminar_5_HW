@@ -1,4 +1,3 @@
-package ru.gb.lesson1.game;
 
 import java.util.Objects;
 

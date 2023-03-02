@@ -1,4 +1,4 @@
-package ru.gb.lesson1.game;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +31,14 @@ public class RobotMap {
         }
     }
 
-public Optional<Robot> deleteById(Long id) {
-
-    for (Robot robot : robots) {
-        if (id.equals(robot.id)) {
-            robots.remove();
-        }
+public boolean deleteById(Long id) {
+    Optional<RobotMap.Robot> robot = this.getById(id);
+    if (robot.isPresent()) {
+        Robot value = robot.get();
+        robots.remove(value);
+        return true;
     }
-    return Optional.empty();
+    return false;
 }
 
     public Optional<Robot> getById(Long id) {
